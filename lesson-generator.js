@@ -1,37 +1,98 @@
-/* Fill lessons 11-100 without touching the original data.js / lessons.json.
-   The first 10 days remain exactly as authored. */
+/* Lesson enrichment + days 11-100.  data.js remains the authored source for days 1-10. */
 (function(){
-  const topics = {
-    11:['work role','工作职责'],12:['asking for information','询问信息'],13:['meetings','会议'],14:['production planning','生产计划'],15:['progress reports','进度报告'],16:['SMT equipment','SMT设备'],17:['components','电子元件'],18:['feeders and nozzles','飞达和吸嘴'],19:['printer and stencil','印刷机和钢网'],20:['mounter and program','贴片机和程序'],21:['reflow','回流焊'],22:['AOI and SPI','AOI和SPI'],23:['defects','不良'],24:['troubleshooting','故障排查'],25:['model change','换机种'],26:['changeover','换线'],27:['UPH and output','UPH和产出'],28:['machine uptime','设备稼动率'],29:['downtime','停机'],30:['maintenance','维护保养'],31:['safety','安全'],32:['quality','品质'],33:['root cause','根本原因'],34:['5 Why','5 Why分析'],35:['improvement','改善'],36:['jigs','治具'],37:['ERP and MBOM','ERP和MBOM'],38:['Gerber and Centroid','Gerber和Centroid'],39:['SOP','SOP'],40:['engineer training','工程师培训'],41:['shift handover','交接班'],42:['work emails','工作邮件'],43:['suppliers','供应商'],44:['purchasing','采购'],45:['material inspection','物料检查'],46:['material shortage','缺料'],47:['PMC schedule','PMC计划'],48:['change request','变更要求'],49:['customers','客户'],50:['deadlines','截止时间'],51:['disagreements','意见分歧'],52:['asking for support','寻求支持'],53:['confirmation','确认'],54:['explaining the cause','解释原因'],55:['solutions','解决方案'],56:['action follow-up','行动跟进'],57:['weekly reports','周报'],58:['monthly reports','月报'],59:['presentations','汇报'],60:['job interviews','面试'],61:['technical discussions','技术讨论'],62:['process description','流程说明'],63:['equipment description','设备说明'],64:['quality discussion','品质沟通'],65:['productivity discussion','效率沟通'],66:['cost discussion','成本沟通'],67:['time discussion','时间沟通'],68:['risk discussion','风险沟通'],69:['priorities','优先事项'],70:['goals','目标'],71:['business trips','出差'],72:['airports','机场'],73:['taxis and transport','出租车和交通'],74:['restaurants on business trips','出差餐厅'],75:['hotels on business trips','出差酒店'],76:['online shopping','网上购物'],77:['banking','银行业务'],78:['addresses and delivery','地址和配送'],79:['meeting new people','认识新朋友'],80:['small talk','闲聊'],81:['new colleagues','新同事'],82:['talking to a manager','和主管沟通'],83:['talking to customers','和客户沟通'],84:['business phone calls','工作电话'],85:['video meetings','视频会议'],86:['presenting a problem','说明问题'],87:['following deadlines','跟进截止时间'],88:['requesting changes','提出变更'],89:['handling errors','处理错误'],90:['apologies and explanations','道歉和解释'],91:['double-checking','再次确认'],92:['giving opinions','发表意见'],93:['agreeing and disagreeing','同意和反对'],94:['natural speaking','自然表达'],95:['listening and asking again','听懂和再确认'],96:['long conversations','长对话'],97:['advanced interviews','高级面试'],98:['factory role-play','工厂角色扮演'],99:['daily-life role-play','生活角色扮演'],100:['100-day review','100天复习']
-  };
-  const en = t => [
-    [`Let's talk about ${t}.`,`Chúng ta hãy nói về ${t}.`,`Let's + V để mở đầu chủ đề.`,[['Let’s + V',true]]],
-    [`I need to understand this clearly.`,`Tôi cần hiểu rõ việc này.`,`need to + V = cần làm gì.`,[['need to + V',true]]],
-    [`Can you explain the details?`,`Bạn có thể giải thích chi tiết không?`,`Can you + V? dùng để yêu cầu lịch sự.`,[['Can you + V?',true]]],
-    [`Please show me how it works.`,`Vui lòng chỉ cho tôi cách nó hoạt động.`,`show me how + mệnh đề = chỉ cho tôi cách…`,[['show me how...',true]]],
-    [`I will check it and get back to you.`,`Tôi sẽ kiểm tra và phản hồi lại bạn.`,`get back to you = phản hồi lại bạn.`,[['get back to you',true]]],
-    [`There is a small problem here.`,`Có một vấn đề nhỏ ở đây.`,`There is + noun để nêu vấn đề/sự tồn tại.`,[['There is + noun',true]]],
-    [`What do you suggest?`,`Bạn đề xuất gì?`,`What do you suggest? dùng để xin ý kiến/giải pháp.`,[['What do you suggest?',true]]],
-    [`I think we should check it again.`,`Tôi nghĩ chúng ta nên kiểm tra lại.`,`should + V = nên làm gì.`,[['should + V',true]]],
-    [`Let me confirm the information first.`,`Để tôi xác nhận thông tin trước.`,`Let me + V = để tôi làm gì.`,[['Let me + V',true]]],
-    [`Thank you for your support.`,`Cảm ơn bạn đã hỗ trợ.`,`Thank you for + noun/V-ing.`,[['Thank you for + V-ing',true]]]
-  ].map(([text,vi,explain,s])=>({text,vi,explain,structures:s.map(([name,isNew])=>({name,new:isNew}))}));
-  const zh = t => [
-    [`我们来谈谈${t}。`,`Wǒmen lái tán tán ${t}.`,`来谈谈 = cùng nói về…`,[['来谈谈 + topic',true]]],
-    ['我需要清楚地了解这件事。','Wǒ xūyào qīngchǔ de liǎojiě zhè jiàn shì.','需要 + V = cần làm gì.',[['需要 + V',true]]],
-    ['你可以解释一下细节吗？','Nǐ kěyǐ jiěshì yíxià xìjié ma?','可以 + V + 吗? dùng để hỏi/yêu cầu.',[['可以 + V + 吗？',true]]],
-    ['请告诉我怎么做。','Qǐng gàosu wǒ zěnme zuò.','请 + V để yêu cầu lịch sự.',[['请 + V',true]]],
-    ['我检查以后再回复你。','Wǒ jiǎnchá yǐhòu zài huífù nǐ.','以后 = sau khi; 再 = rồi mới.',[['V + 以后 + 再 + V',true]]],
-    ['这里有一个小问题。','Zhèlǐ yǒu yí ge xiǎo wèntí.','这里有 + noun = ở đây có…',[[ '这里有 + noun',true]]],
-    ['你有什么建议？','Nǐ yǒu shénme jiànyì?','有什么建议 = có đề xuất gì.',[['有什么建议？',true]]],
-    ['我觉得我们应该再检查一次。','Wǒ juéde wǒmen yīnggāi zài jiǎnchá yí cì.','应该 + V = nên làm gì.',[['应该 + V',true]]],
-    ['让我先确认一下信息。','Ràng wǒ xiān quèrèn yíxià xìnxī.','让我 + V = để tôi làm gì.',[['让我 + V',true]]],
-    ['谢谢你的支持。','Xièxie nǐ de zhīchí.','谢谢 + noun để cảm ơn.',[['谢谢 + noun',true]]]
-  ].map(([text,pinyin,vi,explain,s])=>({text,pinyin,vi,explain,structures:s.map(([name,isNew])=>({name,new:isNew}))}));
-  Object.keys(topics).forEach(k=>{
-    const d=Number(k), pair=topics[d];
-    if(!LESSONS.en[d]) LESSONS.en[d]=en(pair[0]);
-    if(!LESSONS.zh[d]) LESSONS.zh[d]=zh(pair[1]);
-  });
-  window.GENERATED_TOPICS=topics;
+const RULES={
+ 'My name is + name':{formula:'My name is + TÊN',usage:'Dùng để giới thiệu tên. “My name is Dat.” = Tên tôi là Đạt.',example:'My name is Linh. / My name is David.',note:'Trong giao tiếp tự nhiên có thể dùng “I’m + tên” để nói ngắn hơn.'},
+ 'I am from + place':{formula:'I am from + ĐỊA ĐIỂM',usage:'Nói bạn đến từ đâu/quê quán ở đâu.',example:'I am from Vietnam. / I am from Hanoi.',note:'“from” nói nguồn gốc, không phải nơi đang sống.'},
+ 'I live in + place':{formula:'I live in + NƠI CHỐN',usage:'Nói nơi bạn đang sống.',example:'I live in Ninh Binh. / I live in Hanoi.',note:'live = sống; in thường đi với thành phố/quốc gia.'},
+ 'I work in + field':{formula:'I work in + LĨNH VỰC',usage:'Nói bạn làm trong lĩnh vực nào.',example:'I work in SMT. / I work in manufacturing.',note:'Có thể dùng “I work at + công ty” để nói nơi làm việc.'},
+ 'I am + job':{formula:'I am + (a/an) + NGHỀ NGHIỆP',usage:'Nói nghề nghiệp hoặc vai trò.',example:'I am an engineer. / I am a manager.',note:'Với danh từ đếm được số ít thường cần a/an.'},
+ 'I have + noun':{formula:'I have + DANH TỪ',usage:'Nói mình có/sở hữu điều gì hoặc có kinh nghiệm, lịch, vật…',example:'I have experience. / I have a meeting.',note:'have còn có nhiều nghĩa theo ngữ cảnh: có, tổ chức, trải nghiệm.'},
+ 'Nice to meet you':{formula:'Nice to + V',usage:'Câu lịch sự khi gặp người mới lần đầu.',example:'Nice to meet you, too.',note:'Câu đáp thường gặp: “Nice to meet you, too.”'},
+ 'Please + V':{formula:'Please + ĐỘNG TỪ',usage:'Yêu cầu lịch sự, trực tiếp nhưng mềm hơn mệnh lệnh trống.',example:'Please wait a moment. / Please check it.',note:'Please có thể đứng đầu hoặc cuối câu: “Wait a moment, please.”'},
+ 'be + V-ing':{formula:'S + am/is/are + V-ing',usage:'Diễn tả hành động đang xảy ra quanh thời điểm nói.',example:'I am checking the machine. / She is working.',note:'Động từ be phải đổi theo chủ ngữ: I am, he/she is, you/we/they are.'},
+ 'want to + V':{formula:'S + want to + V-nguyên mẫu',usage:'Nói mong muốn hoặc ý định làm gì.',example:'I want to learn English. / I want to rest.',note:'Sau want to dùng động từ nguyên mẫu, không dùng V-ing.'},
+ 'Can you + V?':{formula:'Can + S + V-nguyên mẫu?',usage:'Hỏi khả năng hoặc nhờ ai làm việc gì.',example:'Can you help me? / Can you check this?',note:'Sau can không dùng “to”: không nói “Can you to help…”.'},
+ 'Sure, no problem':{formula:'Sure, + câu trả lời',usage:'Cách đồng ý thân thiện.',example:'Sure, I can help you.',note:'“Sure” tự nhiên trong giao tiếp hằng ngày.'},
+ 'will + V':{formula:'S + will + V-nguyên mẫu',usage:'Nói quyết định, lời hứa hoặc việc sẽ làm trong tương lai.',example:'I will check it now. / I will call you later.',note:'Sau will dùng động từ nguyên mẫu.'},
+ 'What time is + noun?':{formula:'What time + is + danh từ?',usage:'Hỏi một sự kiện/lịch xảy ra lúc mấy giờ.',example:'What time is the meeting? / What time is check-out?',note:'Nếu hỏi hành động của chủ thể: “What time does it start?”'},
+ 'starts at + time':{formula:'S + V(s) + at + GIỜ',usage:'Hiện tại đơn thường dùng cho lịch trình cố định.',example:'The meeting starts at nine.',note:'Ngôi thứ ba số ít thường thêm -s/-es.'},
+ 'have a + event':{formula:'S + have + a/an + SỰ KIỆN',usage:'Nói mình có lịch họp, cuộc hẹn, sự kiện…',example:'I have a meeting this afternoon.',note:'Have ở đây không nhất thiết mang nghĩa “sở hữu vật”.'},
+ 'be available + time':{formula:'S + be available + THỜI GIAN',usage:'Nói mình rảnh/có thể sắp xếp vào thời điểm nào.',example:'I am available after two.',note:'available = rảnh/có thể sắp xếp thời gian.'},
+ 'Can we + V?':{formula:'Can we + V-nguyên mẫu?',usage:'Đề nghị cùng làm gì hoặc xin phép thay đổi kế hoạch.',example:'Can we move the meeting to tomorrow?',note:'“Can we…?” thường thân mật hơn “Could we…?”'},
+ 'works for me':{formula:'That/This + works for me',usage:'Nói một phương án phù hợp với mình.',example:'Tomorrow works for me.',note:'work ở đây mang nghĩa “phù hợp/ổn”, không phải “làm việc”.'},
+ 'will be +':{formula:'S + will be + nơi chốn/tính từ',usage:'Nói trạng thái hoặc vị trí trong tương lai.',example:'I will be there on time.',note:'be là động từ nguyên mẫu sau will.'},
+ 'send + person + thing':{formula:'send + NGƯỜI NHẬN + VẬT/THÔNG TIN',usage:'Cấu trúc gửi thứ gì cho ai.',example:'Please send me the schedule.',note:'Cũng có thể nói “send the schedule to me”.'},
+ 'need + noun + to V':{formula:'S + need + DANH TỪ + to + V',usage:'Nói cần thứ gì để thực hiện một hành động.',example:'I need more time to prepare.',note:'“need to + V” khác với “need + noun + to V”.'},
+ 'Let me + V':{formula:'Let me + V-nguyên mẫu',usage:'Đề nghị để tôi làm gì.',example:'Let me check. / Let me explain.',note:'me là tân ngữ sau let.'},
+ 'after + noun':{formula:'after + DANH TỪ/THỜI ĐIỂM',usage:'Nói một việc xảy ra sau một mốc khác.',example:'I come home after work.',note:'Nếu sau after là một hành động, có thể dùng mệnh đề: “after I finish work”.'},
+ 'usually + V':{formula:'S + usually + V',usage:'Nói thói quen thường xuyên.',example:'I usually get up early.',note:'usually thường đứng trước động từ thường.'},
+ 'have to + V':{formula:'S + have to + V',usage:'Nói nghĩa vụ/việc bắt buộc phải làm.',example:'I have to work tomorrow.',note:'Khác “must” ở sắc thái và cách dùng.'},
+ 'How much is + noun?':{formula:'How much + is + danh từ?',usage:'Hỏi giá một món hàng.',example:'How much is this?',note:'Số nhiều thường dùng “How much are these?”'},
+ 'Do you have + noun?':{formula:'Do you have + DANH TỪ?',usage:'Hỏi cửa hàng/người khác có vật hoặc dịch vụ nào đó không.',example:'Do you have a smaller size?',note:'Sau do you dùng động từ nguyên mẫu.'},
+ 'look for + noun':{formula:'S + be + V-ing + for + DANH TỪ',usage:'look for = tìm kiếm.',example:'I am looking for a cable.',note:'Không dùng “look a cable” với nghĩa tìm.'},
+ 'Can I + V?':{formula:'Can I + V-nguyên mẫu?',usage:'Xin phép hoặc yêu cầu thứ gì.',example:'Can I pay by card? / Can I have a receipt?',note:'Câu lịch sự hơn nữa có thể dùng “Could I…?”'},
+ 'Do you + V?':{formula:'Do + S + V-nguyên mẫu?',usage:'Hỏi thói quen, chính sách hoặc việc thường xảy ra.',example:'Do you accept cash?',note:'Với he/she/it dùng Does.'},
+ 'only + noun':{formula:'S + only + DANH TỪ/động từ',usage:'Nhấn mạnh số lượng/phạm vi giới hạn: chỉ…',example:'I only need one.',note:'Vị trí only có thể thay đổi sắc thái nghĩa.'},
+ 'too + adjective':{formula:'too + TÍNH TỪ',usage:'Nói mức độ quá cao/không phù hợp.',example:'That is too expensive for me.',note:'too = quá, mang ý vượt mức mong muốn.'},
+ 'cheaper one':{formula:'comparative + one',usage:'Dùng one để thay cho danh từ đã biết, tránh lặp lại.',example:'Do you have a cheaper one?',note:'cheap → cheaper; long adjective thường dùng more + adjective.'},
+ 'Have a nice day':{formula:'Have a + adjective + noun',usage:'Lời chúc lịch sự khi kết thúc cuộc trò chuyện.',example:'Have a nice weekend!',note:'Có thể thay day bằng evening, weekend, trip…'},
+ 'would like + noun':{formula:'S + would like + DANH TỪ',usage:'Cách nói muốn/gọi món lịch sự.',example:'I would like some water.',note:'“Would like” lịch sự hơn “want” trong gọi món/yêu cầu.'},
+ 'Is this + adjective?':{formula:'Is this + TÍNH TỪ?',usage:'Hỏi đặc điểm của món/vật.',example:'Is this spicy? / Is this expensive?',note:'Sau be dùng tính từ, không dùng trạng từ.'},
+ 'make it + adjective':{formula:'make + it + TÍNH TỪ',usage:'Yêu cầu làm cho một vật/việc trở nên ở trạng thái nào đó.',example:'Please make it less spicy.',note:'it đại diện cho món/đồ/vấn đề đang nói.'},
+ 'noun + please':{formula:'DANH TỪ + please',usage:'Cách yêu cầu rất ngắn trong nhà hàng/cửa hàng.',example:'No ice, please. / Water, please.',note:'Phù hợp giao tiếp thực tế, nhưng câu đầy đủ sẽ lịch sự hơn.'},
+ 'Can I get + noun?':{formula:'Can I get + DANH TỪ?',usage:'Xin/lấy một món hoặc dịch vụ.',example:'Can I get the bill, please?',note:'Trong Mỹ-Anh, get rất thông dụng trong gọi món/yêu cầu.'},
+ 'Everything was + adjective':{formula:'Everything was + TÍNH TỪ',usage:'Đánh giá toàn bộ trải nghiệm trong quá khứ.',example:'Everything was great.',note:'was là quá khứ của be.'},
+ 'Excuse me, where is...?':{formula:'Excuse me, where is + địa điểm?',usage:'Mở đầu câu hỏi đường lịch sự.',example:'Excuse me, where is the station?',note:'Excuse me dùng để thu hút sự chú ý lịch sự.'},
+ 'How can I + V?':{formula:'How can I + V-nguyên mẫu?',usage:'Hỏi cách làm/đi đến đâu.',example:'How can I get there?',note:'get có thể mang nghĩa đến/đạt được tùy ngữ cảnh.'},
+ 'Is it far from here?':{formula:'Is it far from here?',usage:'Hỏi một nơi có xa vị trí hiện tại không.',example:'Is it far from here?',note:'far = xa; near = gần.'},
+ 'Go straight':{formula:'Go straight + khoảng cách',usage:'Chỉ đường: đi thẳng.',example:'Go straight for two minutes.',note:'straight = thẳng; có thể thêm “ahead”.'},
+ 'Turn left/right':{formula:'Turn left/right + địa điểm',usage:'Chỉ hướng rẽ trái/phải.',example:'Turn left at the next corner.',note:'left = trái; right = phải.'},
+ 'next to + noun':{formula:'be + next to + DANH TỪ',usage:'Mô tả vị trí bên cạnh.',example:'It is next to the bank.',note:'next to = ngay cạnh.'},
+ 'How long does it take?':{formula:'How long does it take (to + V)?',usage:'Hỏi mất bao lâu.',example:'How long does it take?',note:'does đi với chủ ngữ it; động từ chính giữ nguyên.'},
+ 'It takes + time':{formula:'It takes + THỜI GIAN + to + V',usage:'Nói một việc mất bao lâu.',example:'It takes about ten minutes to get there.',note:'Có thể bỏ to + V khi ngữ cảnh đã rõ.'},
+ 'have a reservation':{formula:'S + have + a reservation',usage:'Nói đã đặt chỗ/đặt phòng.',example:'I have a reservation under the name Dat.',note:'reservation = đặt chỗ, đặt phòng.'},
+ 'Could you + V?':{formula:'Could you + V-nguyên mẫu?',usage:'Yêu cầu lịch sự hơn Can you…?',example:'Could you help me with my luggage?',note:'Could ở đây không nhất thiết nói quá khứ; dùng để làm câu hỏi lịch sự.'},
+ 'Where is + noun?':{formula:'Where is + DANH TỪ?',usage:'Hỏi vị trí của người/vật/địa điểm số ít.',example:'Where is the elevator?',note:'Số nhiều dùng “Where are…?”'},
+ 'need + noun':{formula:'S + need + DANH TỪ',usage:'Nói cần một vật/điều gì.',example:'I need another towel.',note:'need + to V khi sau đó là hành động.'},
+ 'not + adjective':{formula:'be + not + TÍNH TỪ',usage:'Phủ định tính chất.',example:'The connection is not very good.',note:'not đứng sau be.'},
+ 'call + person + back':{formula:'call + NGƯỜI + back',usage:'Gọi lại cho ai.',example:'I will call you back.',note:'back nhấn mạnh hành động quay lại/gọi lại.'},
+ 'miss + noun':{formula:'S + miss + DANH TỪ',usage:'Bỏ lỡ hoặc không bắt được điều gì.',example:'I missed your call.',note:'missed = quá khứ của miss.'},
+ 'have + V3':{formula:'S + have/has + V3',usage:'Hiện tại hoàn thành: hành động đã xảy ra và có liên hệ với hiện tại.',example:'I have sent the file.',note:'I/you/we/they dùng have; he/she/it dùng has.'},
+ 'Let me know if...':{formula:'Let me know if + MỆNH ĐỀ',usage:'Nói “hãy cho tôi biết nếu…”.',example:'Let me know if you have any questions.',note:'if = nếu.'},
+ 'get back to you':{formula:'get back to + person',usage:'Phản hồi lại ai sau khi kiểm tra/xử lý.',example:'I will get back to you this afternoon.',note:'Đây là cụm giao tiếp rất thường gặp trong công việc.'},
+ 'should + V':{formula:'S + should + V-nguyên mẫu',usage:'Đưa ra lời khuyên hoặc phương án nên làm.',example:'We should check it again.',note:'should nhẹ hơn must.'}
+};
+const VOCAB={
+ 'name':'tên','Vietnam':'Việt Nam','live':'sống','work':'làm việc','engineer':'kỹ sư','experience':'kinh nghiệm','meet':'gặp','learning':'đang học','naturally':'một cách tự nhiên','morning':'buổi sáng','today':'hôm nay','machine':'máy','help':'giúp','check':'kiểm tra','meeting':'cuộc họp','schedule':'lịch','available':'rảnh/có thể sắp xếp','tomorrow':'ngày mai','calendar':'lịch','family':'gia đình','child':'con nhỏ','important':'quan trọng','usually':'thường','early':'sớm','tired':'mệt','rest':'nghỉ ngơi','shopping':'mua sắm','size':'kích cỡ','cable':'cáp','card':'thẻ','cash':'tiền mặt','receipt':'hóa đơn','expensive':'đắt','cheaper':'rẻ hơn','menu':'thực đơn','noodles':'mì','water':'nước','spicy':'cay','bill':'hóa đơn','full':'no','station':'nhà ga','straight':'thẳng','corner':'góc/ngã rẽ','left':'trái','right':'phải','bank':'ngân hàng','far':'xa','minutes':'phút','reservation':'đặt chỗ/đặt phòng','check in':'nhận phòng','check-out':'trả phòng','breakfast':'bữa sáng','included':'bao gồm','luggage':'hành lý','elevator':'thang máy','towel':'khăn','connection':'kết nối','message':'tin nhắn','call':'gọi điện','later':'sau','file':'tệp/tài liệu','questions':'câu hỏi','free':'rảnh','coffee':'cà phê','plan':'kế hoạch','problem':'vấn đề','details':'chi tiết','support':'hỗ trợ','deadline':'hạn chót','supplier':'nhà cung cấp','quality':'chất lượng','output':'sản lượng','downtime':'thời gian dừng máy','maintenance':'bảo trì'};
+const TOPICS={11:['work role','工作职责'],12:['asking for information','询问信息'],13:['meetings','会议'],14:['production planning','生产计划'],15:['progress reports','进度报告'],16:['SMT equipment','SMT设备'],17:['components','电子元件'],18:['feeders and nozzles','飞达和吸嘴'],19:['printer and stencil','印刷机和钢网'],20:['mounter and program','贴片机和程序'],21:['reflow','回流焊'],22:['AOI and SPI','AOI和SPI'],23:['defects','不良'],24:['troubleshooting','故障排查'],25:['model change','换机种'],26:['changeover','换线'],27:['UPH and output','UPH和产出'],28:['machine uptime','设备稼动率'],29:['downtime','停机'],30:['maintenance','维护保养'],31:['safety','安全'],32:['quality','品质'],33:['root cause','根本原因'],34:['5 Why','5 Why分析'],35:['improvement','改善'],36:['jigs','治具'],37:['ERP and MBOM','ERP和MBOM'],38:['Gerber and Centroid','Gerber和Centroid'],39:['SOP','SOP'],40:['engineer training','工程师培训'],41:['shift handover','交接班'],42:['work emails','工作邮件'],43:['suppliers','供应商'],44:['purchasing','采购'],45:['material inspection','物料检查'],46:['material shortage','缺料'],47:['PMC schedule','PMC计划'],48:['change request','变更要求'],49:['customers','客户'],50:['deadlines','截止时间'],51:['disagreements','意见分歧'],52:['asking for support','寻求支持'],53:['confirmation','确认'],54:['explaining the cause','解释原因'],55:['solutions','解决方案'],56:['action follow-up','行动跟进'],57:['weekly reports','周报'],58:['monthly reports','月报'],59:['presentations','汇报'],60:['job interviews','面试'],61:['technical discussions','技术讨论'],62:['process description','流程说明'],63:['equipment description','设备说明'],64:['quality discussion','品质沟通'],65:['productivity discussion','效率沟通'],66:['cost discussion','成本沟通'],67:['time discussion','时间沟通'],68:['risk discussion','风险沟通'],69:['priorities','优先事项'],70:['goals','目标'],71:['business trips','出差'],72:['airports','机场'],73:['taxis and transport','出租车和交通'],74:['restaurants on business trips','出差餐厅'],75:['hotels on business trips','出差酒店'],76:['online shopping','网上购物'],77:['banking','银行业务'],78:['addresses and delivery','地址和配送'],79:['meeting new people','认识新朋友'],80:['small talk','闲聊'],81:['new colleagues','新同事'],82:['talking to a manager','和主管沟通'],83:['talking to customers','和客户沟通'],84:['business phone calls','工作电话'],85:['video meetings','视频会议'],86:['presenting a problem','说明问题'],87:['following deadlines','跟进截止时间'],88:['requesting changes','提出变更'],89:['handling errors','处理错误'],90:['apologies and explanations','道歉和解释'],91:['double-checking','再次确认'],92:['giving opinions','发表意见'],93:['agreeing and disagreeing','同意和反对'],94:['natural speaking','自然表达'],95:['listening and asking again','听懂和再确认'],96:['long conversations','长对话'],97:['advanced interviews','高级面试'],98:['factory role-play','工厂角色扮演'],99:['daily-life role-play','生活角色扮演'],100:['100-day review','100天复习']};
+function vocabFor(text,topic){const found=[];const lower=text.toLowerCase();for(const [k,v] of Object.entries(VOCAB)){if(lower.includes(k.toLowerCase()))found.push({word:k,meaning:v})}if(topic&&!found.some(x=>x.word===topic))found.push({word:topic,meaning:'từ khóa chủ đề của ngày học'});return found.slice(0,5)}
+function ruleFor(x){const names=(x.structures||[]).map(s=>s.name);for(const n of names){if(RULES[n])return RULES[n];const hit=Object.keys(RULES).find(k=>n.includes(k)||k.includes(n));if(hit)return RULES[hit]}return null}
+function enrich(x,topic){if(x.study)return x;const r=ruleFor(x)||{formula:(x.structures||[]).map(s=>s.name).join(' / '),usage:x.explain||'Xem cấu trúc để hiểu cách ghép câu.',example:'Tự thay chủ ngữ hoặc từ khóa để tạo câu mới.',note:'Đọc câu mẫu rồi tự đặt ít nhất 2 câu tương tự.'};x.study={formula:r.formula,usage:r.usage,example:r.example,note:r.note,vocabulary:vocabFor(x.text,topic)};return x}
+function generatedEn(topic){return [
+ ['Let’s talk about '+topic+'.','Chúng ta hãy nói về '+topic+'.','Mở đầu một chủ đề bằng Let’s + V.','Let’s talk about quality.'],
+ ['I need to understand this clearly.','Tôi cần hiểu rõ việc này.','need to + V = cần làm gì.','I need to understand the schedule clearly.'],
+ ['Can you explain the details?','Bạn có thể giải thích chi tiết không?','Can you + V? dùng để nhờ/đề nghị lịch sự.','Can you explain the problem?'],
+ ['Please show me how it works.','Vui lòng chỉ cho tôi cách nó hoạt động.','show me how + mệnh đề = chỉ cho tôi cách…','Please show me how the machine works.'],
+ ['I will check it and get back to you.','Tôi sẽ kiểm tra và phản hồi lại bạn.','get back to you = phản hồi lại bạn.','I will check the file and get back to you.'],
+ ['There is a small problem here.','Có một vấn đề nhỏ ở đây.','There is + danh từ để nêu sự tồn tại/vấn đề.','There is a problem with the machine.'],
+ ['What do you suggest?','Bạn đề xuất gì?','Hỏi ý kiến hoặc giải pháp.','What do you suggest we do?'],
+ ['I think we should check it again.','Tôi nghĩ chúng ta nên kiểm tra lại.','should + V = nên làm gì.','We should check the result again.'],
+ ['Let me confirm the information first.','Để tôi xác nhận thông tin trước.','Let me + V = để tôi làm gì.','Let me confirm the schedule first.'],
+ ['Thank you for your support.','Cảm ơn bạn đã hỗ trợ.','Thank you for + noun/V-ing.','Thank you for your help.']
+].map(([text,vi,usage,example])=>({text,vi,explain:usage,structures:[{name:'should + V',new:true}],study:{formula:'S + cấu trúc phù hợp + từ khóa chủ đề',vocabulary:vocabFor(text,topic),usage,example,note:'Hãy thay từ khóa chủ đề bằng từ thực tế trong công việc của bạn và tự nói lại câu.'}}))}
+function generatedZh(topic){return [
+ ['我们来谈谈'+topic+'。','Wǒmen lái tán tán '+topic+'.','Chúng ta hãy nói về '+topic+'.','来谈谈 = cùng nói về…','我们来谈谈品质。'],
+ ['我需要清楚地了解这件事。','Wǒ xūyào qīngchǔ de liǎojiě zhè jiàn shì.','Tôi cần hiểu rõ việc này.','需要 + V = cần làm gì.','我需要了解这个问题。'],
+ ['你可以解释一下细节吗？','Nǐ kěyǐ jiěshì yíxià xìjié ma?','Bạn có thể giải thích chi tiết không?','可以 + V + 吗? để hỏi/yêu cầu.','你可以解释一下原因吗？'],
+ ['请告诉我怎么做。','Qǐng gàosu wǒ zěnme zuò.','Vui lòng nói cho tôi biết phải làm thế nào.','请 + V để yêu cầu lịch sự.','请告诉我怎么检查。'],
+ ['我检查以后再回复你。','Wǒ jiǎnchá yǐhòu zài huífù nǐ.','Tôi kiểm tra xong rồi phản hồi bạn.','V + 以后 + 再 + V = sau khi làm xong rồi mới…','我确认以后再告诉你。'],
+ ['这里有一个小问题。','Zhèlǐ yǒu yí ge xiǎo wèntí.','Có một vấn đề nhỏ ở đây.','这里有 + noun = ở đây có…','这里有一个设备问题。'],
+ ['你有什么建议？','Nǐ yǒu shénme jiànyì?','Bạn có đề xuất gì?','有什么 + noun? = có… gì?','你有什么解决方案？'],
+ ['我觉得我们应该再检查一次。','Wǒ juéde wǒmen yīnggāi zài jiǎnchá yí cì.','Tôi nghĩ chúng ta nên kiểm tra lại một lần nữa.','应该 + V = nên…','我们应该再确认一次。'],
+ ['让我先确认一下信息。','Ràng wǒ xiān quèrèn yíxià xìnxī.','Để tôi xác nhận thông tin trước.','让我 + V = để tôi…','让我先检查一下。'],
+ ['谢谢你的支持。','Xièxie nǐ de zhīchí.','Cảm ơn sự hỗ trợ của bạn.','谢谢 + noun = cảm ơn…','谢谢你的帮助。']
+].map(([text,pinyin,vi,usage,example])=>({text,pinyin,vi,explain:usage,structures:[{name:'应该 + V',new:true}],study:{formula:'S + cấu trúc phù hợp + từ khóa chủ đề',vocabulary:[{word:topic,meaning:'từ khóa chủ đề của ngày học'}],usage,example,note:'Đọc pinyin thành tiếng, sau đó thay từ khóa bằng từ thực tế ở nơi làm việc.'}}))}
+Object.keys(TOPICS).forEach(k=>{const d=+k;const [enTopic,zhTopic]=TOPICS[d];if(!LESSONS.en[d])LESSONS.en[d]=generatedEn(enTopic);if(!LESSONS.zh[d])LESSONS.zh[d]=generatedZh(zhTopic)});
+for(const lang of ['en','zh'])for(const d of Object.keys(LESSONS[lang])){const topic=TOPICS[d]?.[lang==='en'?0:1]||'';LESSONS[lang][d].forEach(x=>enrich(x,topic));}
+window.GENERATED_TOPICS=TOPICS;
 })();
