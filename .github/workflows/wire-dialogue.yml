@@ -1,0 +1,50 @@
+name: Wire daily review dialogue
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  wire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add dialogue loader and refresh PWA cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          index = Path('index.html')
+          text = index.read_text(encoding='utf-8')
+          tag = '<script src="dialogue.js"></script>'
+          if tag not in text:
+              marker = '<script src="lesson-generator.js"></script>'
+              if marker not in text:
+                  raise SystemExit('lesson-generator.js script tag not found in index.html')
+              text = text.replace(marker, marker + tag, 1)
+              index.write_text(text, encoding='utf-8')
+
+          sw = Path('sw.js')
+          sw_text = sw.read_text(encoding='utf-8')
+          sw_text = sw_text.replace('language100-v11', 'language100-v12')
+          if './dialogue.js' not in sw_text:
+              sw_text = sw_text.replace("'./lesson-generator.js'", "'./lesson-generator.js','./dialogue.js'")
+          sw.write_text(sw_text, encoding='utf-8')
+          PY
+
+      - name: Commit wiring changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          if git diff --cached --quiet; then
+            echo "Dialogue already wired."
+          else
+            git commit -m "Wire daily review dialogue and refresh PWA cache"
+            git push
+          fi
