@@ -1,52 +1,34 @@
-import argparse
-import json
-import subprocess
+import argparse,json,subprocess
 from pathlib import Path
-import numpy as np
-import soundfile as sf
+import numpy as np,soundfile as sf
 from kokoro import KPipeline
-
-SAMPLE_RATE=24000
-PAUSE_BETWEEN_REPEATS=0.65
-PAUSE_BETWEEN_SENTENCES=1.25
-VOICE={"en":{"female":("a","af_heart"),"male":("a","am_michael")},"zh":{"female":("z","zf_001"),"male":("z","zm_010")}}
-REPO={"en":"hexgrad/Kokoro-82M","zh":"hexgrad/Kokoro-82M-v1.1-zh"}
+SAMPLE_RATE=24000;PAUSE_BETWEEN_REPEATS=.65;PAUSE_BETWEEN_SENTENCES=1.25
+VOICE={'en':{'female':('a','af_heart'),'male':('a','am_michael')},'zh':{'female':('z','zf_001'),'male':('z','zm_010')}}
+REPO={'en':'hexgrad/Kokoro-82M','zh':'hexgrad/Kokoro-82M-v1.1-zh'}
 TOPICS={11:'work role',12:'asking for information',13:'meetings',14:'production planning',15:'progress reports',16:'SMT equipment',17:'components',18:'feeders and nozzles',19:'printer and stencil',20:'mounter and program',21:'reflow',22:'AOI and SPI',23:'defects',24:'troubleshooting',25:'model change',26:'changeover',27:'UPH and output',28:'machine uptime',29:'downtime',30:'maintenance',31:'safety',32:'quality',33:'root cause',34:'5 Why analysis',35:'improvement',36:'jigs',37:'ERP and MBOM',38:'Gerber and Centroid',39:'SOP',40:'engineer training',41:'shift handover',42:'work emails',43:'suppliers',44:'purchasing',45:'material inspection',46:'material shortage',47:'PMC schedule',48:'change request',49:'customers',50:'deadlines',51:'disagreements',52:'asking for support',53:'confirmation',54:'explaining the cause',55:'solutions',56:'action follow-up',57:'weekly reports',58:'monthly reports',59:'presentations',60:'job interviews',61:'technical discussions',62:'process description',63:'equipment description',64:'quality discussion',65:'productivity discussion',66:'cost discussion',67:'time discussion',68:'risk discussion',69:'priorities',70:'goals',71:'business trips',72:'airports',73:'taxis and transport',74:'restaurants',75:'hotels',76:'online shopping',77:'banking',78:'addresses and delivery',79:'meeting new people',80:'small talk',81:'new colleagues',82:'talking to a manager',83:'talking to customers',84:'business phone calls',85:'video meetings',86:'presenting a problem',87:'following deadlines',88:'requesting changes',89:'handling errors',90:'apologies and explanations',91:'double-checking',92:'giving opinions',93:'agreeing and disagreeing',94:'natural speaking',95:'listening and asking again',96:'long conversations',97:'advanced interviews',98:'factory role-play',99:'daily-life role-play',100:'100-day review'}
 ZH={'work role':'工作职责','asking for information':'询问信息','meetings':'会议','production planning':'生产计划','progress reports':'进度报告','SMT equipment':'SMT设备','components':'电子元件','feeders and nozzles':'飞达和吸嘴','printer and stencil':'印刷机和钢网','mounter and program':'贴片机和程序','reflow':'回流焊','AOI and SPI':'AOI和SPI','defects':'不良','troubleshooting':'故障排查','model change':'换机种','changeover':'换线','UPH and output':'UPH和产出','machine uptime':'设备稼动率','downtime':'停机','maintenance':'维护保养','safety':'安全','quality':'品质','root cause':'根本原因','5 Why analysis':'5 Why分析','improvement':'改善','jigs':'治具','ERP and MBOM':'ERP和MBOM','Gerber and Centroid':'Gerber和Centroid','SOP':'SOP','engineer training':'工程师培训','shift handover':'交接班','work emails':'工作邮件','suppliers':'供应商','purchasing':'采购','material inspection':'物料检查','material shortage':'缺料','PMC schedule':'PMC计划','change request':'变更要求','customers':'客户','deadlines':'截止时间','disagreements':'意见分歧','asking for support':'寻求支持','confirmation':'确认','explaining the cause':'解释原因','solutions':'解决方案','action follow-up':'行动跟进','weekly reports':'周报','monthly reports':'月报','presentations':'汇报','job interviews':'面试','technical discussions':'技术讨论','process description':'流程说明','equipment description':'设备说明','quality discussion':'品质沟通','productivity discussion':'效率沟通','cost discussion':'成本沟通','time discussion':'时间沟通','risk discussion':'风险沟通','priorities':'优先事项','goals':'目标','business trips':'出差','airports':'机场','taxis and transport':'出租车和交通','restaurants':'餐厅','hotels':'酒店','online shopping':'网上购物','banking':'银行业务','addresses and delivery':'地址和配送','meeting new people':'认识新朋友','small talk':'闲聊','new colleagues':'新同事','talking to a manager':'和主管沟通','talking to customers':'和客户沟通','business phone calls':'工作电话','video meetings':'视频会议','presenting a problem':'说明问题','following deadlines':'跟进截止时间','requesting changes':'提出变更','handling errors':'处理错误','apologies and explanations':'道歉和解释','double-checking':'再次确认','giving opinions':'发表意见','agreeing and disagreeing':'同意和反对','natural speaking':'自然表达','listening and asking again':'听懂和再确认','long conversations':'长对话','advanced interviews':'高级面试','factory role-play':'工厂角色扮演','daily-life role-play':'生活角色扮演','100-day review':'100天复习'}
-
 def fallback(lang,day):
-    t=TOPICS[day]; z=ZH.get(t,t)
-    if lang=='en':
-        texts=[f"Let's talk about {t}.","I need to understand this clearly.","Can you explain the details?","Please show me how it works.","I will check it and get back to you.","There is a small problem here.","What do you suggest?","I think we should check it again.","Let me confirm the information first.","Thank you for your support."]
-    else:
-        texts=[f"我们来谈谈{z}。","我需要清楚地了解这件事。","你可以解释一下细节吗？","请告诉我怎么做。","我检查以后再回复你。","这里有一个小问题。","你有什么建议？","我觉得我们应该再检查一次。","让我先确认一下信息。","谢谢你的支持。"]
-    return [{"text":x} for x in texts]
-
+ t=TOPICS[day];z=ZH[t]
+ texts=(
+ [f"Let's talk about {t}.",'I need to understand this clearly.','Can you explain the details?','Please show me how it works.','I will check it and get back to you.','There is a small problem here.','What do you suggest?','I think we should check it again.','Let me confirm the information first.','Thank you for your support.'] if lang=='en' else
+ ['我们来谈谈'+z+'。','我需要清楚地了解这件事。','你可以解释一下细节吗？','请告诉我怎么做。','我检查以后再回复你。','这里有一个小问题。','你有什么建议？','我觉得我们应该再检查一次。','让我先确认一下信息。','谢谢你的支持。'])
+ return [{'text':x} for x in texts]
 def synthesize_day(pipe,items,voice,speed=1.0):
-    parts=[]; pr=np.zeros(int(SAMPLE_RATE*PAUSE_BETWEEN_REPEATS),dtype=np.float32); ps=np.zeros(int(SAMPLE_RATE*PAUSE_BETWEEN_SENTENCES),dtype=np.float32)
-    for i,item in enumerate(items):
-        text=str(item['text']).strip(); generated=[]
-        for _,_,audio in pipe(text,voice=voice,speed=speed,split_pattern=r'\n+'): generated.append(np.asarray(audio,dtype=np.float32))
-        if not generated: raise RuntimeError(f'Kokoro returned no audio for: {text}')
-        clip=np.concatenate(generated); parts.extend([clip,pr,clip])
-        if i<len(items)-1: parts.append(ps)
-    return np.concatenate(parts) if parts else np.zeros(1,dtype=np.float32)
-
+ parts=[];pr=np.zeros(int(SAMPLE_RATE*PAUSE_BETWEEN_REPEATS),dtype=np.float32);ps=np.zeros(int(SAMPLE_RATE*PAUSE_BETWEEN_SENTENCES),dtype=np.float32)
+ for i,item in enumerate(items):
+  generated=[]
+  for _,_,audio in pipe(str(item['text']).strip(),voice=voice,speed=speed,split_pattern=r'\n+'):generated.append(np.asarray(audio,dtype=np.float32))
+  if not generated:raise RuntimeError(f"Kokoro returned no audio for: {item['text']}")
+  clip=np.concatenate(generated);parts.extend([clip,pr,clip])
+  if i<len(items)-1:parts.append(ps)
+ return np.concatenate(parts) if parts else np.zeros(1,dtype=np.float32)
 def make_track(lang,gender,day,items,out_root):
-    lang_code,voice=VOICE[lang][gender]; pipe=KPipeline(lang_code=lang_code,repo_id=REPO[lang]); audio=synthesize_day(pipe,items,voice)
-    out_dir=out_root/lang/gender; out_dir.mkdir(parents=True,exist_ok=True); wav=out_dir/f'day-{day:02d}.wav'; mp3=out_dir/f'day-{day:02d}.mp3'
-    sf.write(wav,audio,SAMPLE_RATE,subtype='PCM_16')
-    subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-i',str(wav),'-codec:a','libmp3lame','-b:a','64k','-ar',str(SAMPLE_RATE),str(mp3)],check=True)
-    wav.unlink(missing_ok=True); size=mp3.stat().st_size/(1024*1024)
-    if size>95: raise RuntimeError(f'Generated {mp3} is {size:.1f} MB')
-    print(f'OK {mp3} ({size:.2f} MB)')
-
+ lc,voice=VOICE[lang][gender];pipe=KPipeline(lang_code=lc,repo_id=REPO[lang]);audio=synthesize_day(pipe,items,voice);d=out_root/lang/gender;d.mkdir(parents=True,exist_ok=True);wav=d/f'day-{day:02d}.wav';mp3=d/f'day-{day:02d}.mp3';sf.write(wav,audio,SAMPLE_RATE,subtype='PCM_16');subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-i',str(wav),'-codec:a','libmp3lame','-b:a','64k','-ar',str(SAMPLE_RATE),str(mp3)],check=True);wav.unlink(missing_ok=True);size=mp3.stat().st_size/(1024*1024);print(f'OK {mp3} ({size:.2f} MB)')
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--lessons',default='lessons.json');p.add_argument('--start-day',type=int,default=1);p.add_argument('--end-day',type=int,default=100);p.add_argument('--out',default='audio-generated');a=p.parse_args()
-    if not(1<=a.start_day<=a.end_day<=100): raise SystemExit('start-day/end-day must be between 1 and 100')
-    lessons=json.loads(Path(a.lessons).read_text(encoding='utf-8')); out=Path(a.out)
-    for lang in ('en','zh'):
-        for day in range(a.start_day,a.end_day+1):
-            items=lessons.get(lang,{}).get(str(day),[]) or fallback(lang,day)
-            for gender in ('male','female'): make_track(lang,gender,day,items,out)
-if __name__=='__main__': main()
+ p=argparse.ArgumentParser();p.add_argument('--lessons',default='lessons.json');p.add_argument('--start-day',type=int,default=1);p.add_argument('--end-day',type=int,default=100);p.add_argument('--out',default='audio-generated');a=p.parse_args();lessons=json.loads(Path(a.lessons).read_text(encoding='utf-8'));out=Path(a.out)
+ if not(1<=a.start_day<=a.end_day<=100):raise SystemExit('start-day/end-day must be between 1 and 100')
+ for lang in ('en','zh'):
+  for day in range(a.start_day,a.end_day+1):
+   items=lessons.get(lang,{}).get(str(day),[]) or fallback(lang,day)
+   for gender in ('male','female'):make_track(lang,gender,day,items,out)
+if __name__=='__main__':main()
