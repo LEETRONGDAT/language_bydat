@@ -1,0 +1,62 @@
+name: Generate free AI audio (Kokoro)
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_day:
+        description: "Ngày bắt đầu"
+        required: true
+        default: "1"
+      end_day:
+        description: "Ngày kết thúc"
+        required: true
+        default: "10"
+
+permissions:
+  contents: write
+
+jobs:
+  tts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak-ng
+          python -m pip install --upgrade pip
+          python -m pip install kokoro soundfile
+
+      - name: Check files
+        run: |
+          echo "Repository:"
+          ls -la
+          echo "Scripts:"
+          ls -la scripts
+          echo "Lessons:"
+          ls -la lessons.json
+
+      - name: Generate audio
+        run: |
+          python scripts/generate_audio.py \
+            --lessons lessons.json \
+            --start-day "${{ inputs.start_day }}" \
+            --end-day "${{ inputs.end_day }}" \
+            --out audio-generated
+
+      - name: Commit audio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add audio-generated
+
+          if git diff --cached --quiet; then
+            echo "No new audio."
+          else
+            git commit -m "Generate Kokoro audio"
+            git push
+          fi
